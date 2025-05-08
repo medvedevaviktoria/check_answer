@@ -10,7 +10,6 @@ import com.example.check_answer.databinding.ActivityMainBinding
 import java.text.DecimalFormat
 import kotlin.random.Random
 
-
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
     //переменные для подсчёта статистики
@@ -21,10 +20,7 @@ class MainActivity : AppCompatActivity() {
     var showCorrectAnswer = true //показываем ли правильный ответ пользователю
     var displayedAnswer = 0.0
     var isUserThinkAnswerIsRight = false //переменная, в которой записывается, считает ли пользователь, что ответ верный
-
-
-
-    // Переменные для времени
+    // переменные для времени
     private var startTime = 0L
     val listOfTime = mutableListOf<Long>() //список времени на каждый ответ
     private val timeFormat = DecimalFormat("#.##")
@@ -42,16 +38,16 @@ class MainActivity : AppCompatActivity() {
         generateAnExample() //генерация примера и вывод на экран
         binding.btnRight.isEnabled = true
         binding.btnWrong.isEnabled = true
-        startTime = SystemClock.elapsedRealtime()
+        startTime = SystemClock.elapsedRealtime() //вычисление начального времени в миллисекундах
     }
 
     //метод нажатия на кнопку ВЕРНО
     fun btnRightClick(view: View) {
         isUserThinkAnswerIsRight = true
-        if (showCorrectAnswer) {
+        if (showCorrectAnswer) {//если пользователь угадал, что пример ВЕРНЫЙ
             binding.linearLayoutExample.setBackgroundColor(Color.GREEN)
             correctAnswers++ }
-        else {
+        else {//если пользователь не угадал, что пример ВЕРНЫЙ
             binding.linearLayoutExample.setBackgroundColor(Color.RED)
             wrongAnswers++ }
         checkAnswer()
@@ -61,22 +57,22 @@ class MainActivity : AppCompatActivity() {
     //метод нажатия на кнопку НЕВЕРНО
     fun btnWrongClick(view: View) {
         isUserThinkAnswerIsRight = false
-        if (!showCorrectAnswer) {
+        if (!showCorrectAnswer) {//если пользователь угадал, что пример НЕВЕРНЫЙ
             binding.linearLayoutExample.setBackgroundColor(Color.GREEN)
             correctAnswers++ }
-        else {
+        else {//если пользователь не угадал, что пример НЕВЕРНЫЙ
             binding.linearLayoutExample.setBackgroundColor(Color.RED)
             wrongAnswers++ }
         checkAnswer()
         updateStats()
     }
 
+    //все дополнительные действия к проверке ответа
     fun checkAnswer() {
-        val currentTime = SystemClock.elapsedRealtime() - startTime
-        listOfTime.add(currentTime)
-
-        binding.btnRight.isEnabled = false
-        binding.btnWrong.isEnabled = false
+        val currentTime = SystemClock.elapsedRealtime() - startTime //находим время, за которое был дан текущий ответ
+        listOfTime.add(currentTime) //добавляем в список время, за которое был дан текущий ответ
+        binding.btnRight.isEnabled = false //кнопка ВЕРНО становится недоступна
+        binding.btnWrong.isEnabled = false //кнопка НЕВЕРНО становится недоступна
         binding.btnStart.isEnabled = true //кнопка СТАРТ становится доступна
     }
 
@@ -110,8 +106,7 @@ class MainActivity : AppCompatActivity() {
 
     //метод генерации неправильного ответа
     fun generateWrongAnswer(rightAnswer : Double, operation : String) : Double {
-        val miss = when (operation)
-        {
+        val miss = when (operation) {
             "/" -> "%.2f".format(Random.nextDouble(0.1, 1.0)).toDouble()
             else -> Random.nextInt(1, 10).toDouble()
         }
@@ -122,15 +117,16 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
+    //метод обновления статистики
     fun updateStats() {
         if (listOfTime.isNotEmpty()) {
-            binding.txtMinTime.text = timeFormat.format(listOfTime.min().toDouble() / 1000)
-            binding.txtMaxTime.text = timeFormat.format(listOfTime.max().toDouble() / 1000)
-            binding.txtAvgTime.text = timeFormat.format(listOfTime.average() / 1000)
+            binding.txtMinTime.text = timeFormat.format(listOfTime.min().toDouble() / 1000) //минимальное время
+            binding.txtMaxTime.text = timeFormat.format(listOfTime.max().toDouble() / 1000) //максимальное время
+            binding.txtAvgTime.text = timeFormat.format(listOfTime.average() / 1000) //среднее время
         }
-        binding.txtNumberRight.text = correctAnswers.toString()
-        binding.txtNumberWrong.text = wrongAnswers.toString()
-        binding.txtAllExamples.text = (correctAnswers + wrongAnswers).toString()
-        binding.txtPercentageCorrectAnswers.text = "%.2f%%".format(correctAnswers.toDouble() / (wrongAnswers + correctAnswers).toDouble() * 100)
+        binding.txtNumberRight.text = correctAnswers.toString() //количество правильных ответов
+        binding.txtNumberWrong.text = wrongAnswers.toString() //количество неправильных ответов
+        binding.txtAllExamples.text = (correctAnswers + wrongAnswers).toString() ////количество ответов
+        binding.txtPercentageCorrectAnswers.text = "%.2f%%".format(correctAnswers.toDouble() / (wrongAnswers + correctAnswers).toDouble() * 100) //количество правильных ответов в процентах
     }
 }
